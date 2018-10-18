@@ -162,8 +162,8 @@ def edgeFind(a):
                                 pot_edge += 1
                                 pot_edge_hash.update({pot_edge: []})
                                 fail_points = 0
-        for pot_edge in pot_edge_hash:
-                print(pot_edge_hash[pot_edge])
+       # for pot_edge in pot_edge_hash:
+               # print(pot_edge_hash[pot_edge])
 
 
 
@@ -221,9 +221,9 @@ for y in range(336, 340):
 
 # Find and display black/white boundary of the jigsaw puzzle piece
 #temp_height = PILimg.size()
-print("DEBUG --- image size is ", PILimg.size)
-print("DEBUG --- image height is ", PILimg.height)
-print("DEBUG --- image width is ", PILimg.width)
+#print("DEBUG --- image size is ", PILimg.size)
+#print("DEBUG --- image height is ", PILimg.height)
+#print("DEBUG --- image width is ", PILimg.width)
 # PILimg.getheight()):
 # PILimg.getwidth()):  #
 #print("************** ", temp_height)
@@ -259,7 +259,7 @@ while True: # Find a white pixel on this row, which is the edge of the jigsaw pu
 		break
 	else:
 		currentX = currentX + 1  # Move to the right; continue looking for white pixel
-print("Coord sequence is ", currentX, " ", currentY) # Initial point
+#print("Coord sequence is ", currentX, " ", currentY) # Initial point
 canvas.create_oval(currentX, currentY, currentX+10, currentY+10, fill='red', outline='black')  # DEBUG
 canvas.update()
 
@@ -323,7 +323,7 @@ while True: # all the way around the jigsaw puzzle piece
 def findStraightEdges(point_list):
     angles = []
     edge_point = []
-    angle_variance = 1.0
+    angle_variance = 0.6
     for i in range(0,len(point_list)-1):
         
         point_a_x = point_list[i][0]
@@ -333,16 +333,11 @@ def findStraightEdges(point_list):
         point_b_y = point_list[i+1][1]
         
         angles.append(angle(point_a_x,point_a_y,point_b_x,point_b_y))
-        
-    counter = 0
     for j in range(len(angles)-1):
         if(angles[j] <= angles[j+1] + angle_variance and angles[j] >= angles[j+1] - angle_variance and angles[j] >= angles[j-1] - angle_variance and angles[j] <= angles[j-1] + angle_variance):
             #print(angles[j])
-            counter += 1
             edge_point.append(point_list[j])
-            print(edge_point)
-        elif(counter == 36):
-            return edge_point
+            #print(edge_point) 
         else:
             edge_point.clear();
         
@@ -354,7 +349,7 @@ def findStraightEdges(point_list):
                    
 edgeFind(sweep_angle_tracker)
 #rotate(point_tracker)
-print(findStraightEdges(point_tracker))
+findStraightEdges(point_tracker)
 
 
 
