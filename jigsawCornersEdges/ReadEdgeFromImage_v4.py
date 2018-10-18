@@ -70,20 +70,20 @@ def angle(xsource, ysource, xdest, ydest):
 	'''
 
 	if theta_sin >= 0 and theta_cos >= 0:  # Quadrant 1
-		print("Q1   angle(", xsource, " ", ysource, " ", xdest, " ", ydest,
-			" is ", theta_sin)
+		#print("Q1   angle(", xsource, " ", ysource, " ", xdest, " ", ydest,
+			#" is ", theta_sin)
 		return theta_sin
 	elif theta_sin >= 0 and theta_cos <= 0:  # Quadrant 2
-		print("Q2   angle(", xsource, " ", ysource, " ", xdest, " ", ydest,
-			" is ", theta_cos)
+		#print("Q2   angle(", xsource, " ", ysource, " ", xdest, " ", ydest,
+			#" is ", theta_cos)
 		return theta_cos
 	elif theta_sin <= 0 and theta_cos <= 0:  # Quadrant 3
-		print("Q3   angle(", xsource, " ", ysource, " ", xdest, " ", ydest,
-			" is ", theta_sin)
+		#print("Q3   angle(", xsource, " ", ysource, " ", xdest, " ", ydest,
+			#" is ", theta_sin)
 		return theta_sin
 	else:  # Quadrant 4
-		print("Q4   angle(", xsource, " ", ysource, " ", xdest, " ", ydest,
-			" is ", 4 * math.pi - theta_cos)
+		#print("Q4   angle(", xsource, " ", ysource, " ", xdest, " ", ydest,
+			#" is ", 4 * math.pi - theta_cos)
 		return 4 * math.pi - theta_cos
 
 
@@ -104,30 +104,31 @@ def pointAt(h, a, x, y):
 #rotating a piece
 def rotate(a):
 
-	#clear canvas
-	canvas.delete("all")
+    #clear canvas
+    canvas.delete("all")
 
-	#specify the degrees that the piece should be rotated
-	rotation_deg = input("How many degrees would you like to rotate? \n")
+    
+    #specify the degrees that the piece should be rotated
+    rotation_deg = input("How many degrees would you like to rotate? \n")
 
-	#convert to rads
-	rotation_rad = math.radians(int(rotation_deg))
+    #convert to rads
+    rotation_rad = math.radians(int(rotation_deg))
 
-	#finding origin for rotation, this uses the center of the canvas
-	origin_x = int(PILimg.width/2)
-	origin_y = int(PILimg.height/2)
-	for point in a:
-		x = point[0]
-		y = point[1]
-		# rotating the points around the origin by the specified angle
-		adjusted_x = (x - origin_x)
-		adjusted_y = (y - origin_y)
+    #finding origin for rotation, this uses the center of the canvas
+    origin_x = int(PILimg.width/2)
+    origin_y = int(PILimg.height/2)
+    for point in a:
+        x = point[0]
+        y = point[1]
+        # rotating the points around the origin by the specified angle
+        adjusted_x = (x - origin_x)
+        adjusted_y = (y - origin_y)
 
-		rotated_x = origin_x + math.cos(rotation_rad) * adjusted_x + math.sin(rotation_rad) * adjusted_y
-		rotated_y = origin_y + -math.sin(rotation_rad) * adjusted_x + math.cos(rotation_rad) * adjusted_y
+        rotated_x = origin_x + math.cos(rotation_rad) * adjusted_x + math.sin(rotation_rad) * adjusted_y
+        rotated_y = origin_y + -math.sin(rotation_rad) * adjusted_x + math.cos(rotation_rad) * adjusted_y
 
 
-		canvas.create_oval(rotated_x-5, rotated_y-5, rotated_x+5, rotated_y+5, fill='blue', outline='black')
+        canvas.create_oval(rotated_x-5, rotated_y-5, rotated_x+5, rotated_y+5, fill='blue', outline='black')
 
 
 def edgeFind(a):
@@ -319,10 +320,41 @@ while True: # all the way around the jigsaw puzzle piece
 	# print(x1, "  ", currentX, "     ", y1, "  ", currentY)
 	if (abs(x1 - currentX) <= PIXEL_STEP) and (abs(y1 - currentY) <= PIXEL_STEP) and sampleCount > 5:
 		break
-
+def findStraightEdges(point_list):
+    angles = []
+    edge_point = []
+    angle_variance = 1.0
+    for i in range(0,len(point_list)-1):
+        
+        point_a_x = point_list[i][0]
+        point_a_y = point_list[i][1]
+        
+        point_b_x = point_list[i+1][0]
+        point_b_y = point_list[i+1][1]
+        
+        angles.append(angle(point_a_x,point_a_y,point_b_x,point_b_y))
+        
+    counter = 0
+    for j in range(len(angles)-1):
+        if(angles[j] <= angles[j+1] + angle_variance and angles[j] >= angles[j+1] - angle_variance and angles[j] >= angles[j-1] - angle_variance and angles[j] <= angles[j-1] + angle_variance):
+            #print(angles[j])
+            counter += 1
+            edge_point.append(point_list[j])
+            print(edge_point)
+        elif(counter == 36):
+            return edge_point
+        else:
+            edge_point.clear();
+        
+    for point in edge_point:
+        canvas.create_oval(point[0]-5, point[1]-5, point[0]+5, point[1]+5, fill='blue', outline='black')
+    #print(slope)
+    return []
+        
+                   
 edgeFind(sweep_angle_tracker)
-rotate(point_tracker)
-
+#rotate(point_tracker)
+print(findStraightEdges(point_tracker))
 
 
 
