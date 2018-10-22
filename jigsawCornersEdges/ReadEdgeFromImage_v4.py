@@ -100,7 +100,7 @@ def pointAt(h, a, x, y):
 	return (xNew, yNew)
 
 
-
+'''
 #rotating a piece
 def rotate(a):
 
@@ -118,55 +118,55 @@ def rotate(a):
     origin_x = int(PILimg.width/2)
     origin_y = int(PILimg.height/2)
     for point in a:
-        x = point[0]
-        y = point[1]
-        # rotating the points around the origin by the specified angle
-        adjusted_x = (x - origin_x)
-        adjusted_y = (y - origin_y)
+	x = point[0]
+	y = point[1]
+	# rotating the points around the origin by the specified angle
+	adjusted_x = (x - origin_x)
+	adjusted_y = (y - origin_y)
 
-        rotated_x = origin_x + math.cos(rotation_rad) * adjusted_x + math.sin(rotation_rad) * adjusted_y
-        rotated_y = origin_y + -math.sin(rotation_rad) * adjusted_x + math.cos(rotation_rad) * adjusted_y
-
-
-        canvas.create_oval(rotated_x-5, rotated_y-5, rotated_x+5, rotated_y+5, fill='blue', outline='black')
+	rotated_x = origin_x + math.cos(rotation_rad) * adjusted_x + math.sin(rotation_rad) * adjusted_y
+	rotated_y = origin_y + -math.sin(rotation_rad) * adjusted_x + math.cos(rotation_rad) * adjusted_y
 
 
+	canvas.create_oval(rotated_x-5, rotated_y-5, rotated_x+5, rotated_y+5, fill='blue', outline='black')
+'''
+'''
 def edgeFind(a):
 
-        #count of current potentail edge
-        pot_edge = 0
+	#count of current potentail edge
+	pot_edge = 0
 
-        #current point being checked
-        curr_point = 0
+	#current point being checked
+	curr_point = 0
 
-        #this tracks points that fail to meet the edge criteria
-        #if more than 2 in a row fail, a new potentail edge is created
-        fail_points = 0
-        #hash that list points for potential edges
-        pot_edge_hash = {}
+	#this tracks points that fail to meet the edge criteria
+	#if more than 2 in a row fail, a new potentail edge is created
+	fail_points = 0
+	#hash that list points for potential edges
+	pot_edge_hash = {}
 
-        #create list of possible edges
-        while curr_point < len(a)-1:
-                print(abs(a[curr_point] - a[curr_point+1]))
-                if curr_point == 0:
-                        pot_edge_hash.update({pot_edge: []})
-                        curr_point += 1
-                elif curr_point > 0 and abs(a[curr_point] - a[curr_point+1] ) <= 10:
-                        pot_edge_hash[pot_edge].append(curr_point)
-                        curr_point += 1
-                elif abs(a[curr_point] - a[curr_point+1]) > 10:
-                        fail_points += 1
-                        pot_edge_hash[pot_edge].append(curr_point)
-                        curr_point += 1
-                        if fail_points > 3:
-                                pot_edge += 1
-                                pot_edge_hash.update({pot_edge: []})
-                                fail_points = 0
+	#create list of possible edges
+	while curr_point < len(a)-1:
+		print(abs(a[curr_point] - a[curr_point+1]))
+		if curr_point == 0:
+			pot_edge_hash.update({pot_edge: []})
+			curr_point += 1
+		elif curr_point > 0 and abs(a[curr_point] - a[curr_point+1] ) <= 10:
+			pot_edge_hash[pot_edge].append(curr_point)
+			curr_point += 1
+		elif abs(a[curr_point] - a[curr_point+1]) > 10:
+			fail_points += 1
+			pot_edge_hash[pot_edge].append(curr_point)
+			curr_point += 1
+			if fail_points > 3:
+				pot_edge += 1
+				pot_edge_hash.update({pot_edge: []})
+				fail_points = 0
        # for pot_edge in pot_edge_hash:
-               # print(pot_edge_hash[pot_edge])
+	       # print(pot_edge_hash[pot_edge])
 
 
-
+'''
 
 
 # Use PILLOW to read data from within image, but not to display image or graphically show path.
@@ -320,34 +320,51 @@ while True: # all the way around the jigsaw puzzle piece
 	# print(x1, "  ", currentX, "     ", y1, "  ", currentY)
 	if (abs(x1 - currentX) <= PIXEL_STEP) and (abs(y1 - currentY) <= PIXEL_STEP) and sampleCount > 5:
 		break
+
 def findStraightEdges(point_list):
-    angles = []
-    edge_point = []
-    angle_variance = 0.6
-    for i in range(0,len(point_list)-1):
-        
-        point_a_x = point_list[i][0]
-        point_a_y = point_list[i][1]
-        
-        point_b_x = point_list[i+1][0]
-        point_b_y = point_list[i+1][1]
-        
-        angles.append(angle(point_a_x,point_a_y,point_b_x,point_b_y))
-    for j in range(len(angles)-1):
-        if(angles[j] <= angles[j+1] + angle_variance and angles[j] >= angles[j+1] - angle_variance and angles[j] >= angles[j-1] - angle_variance and angles[j] <= angles[j-1] + angle_variance):
-            #print(angles[j])
-            edge_point.append(point_list[j])
-            #print(edge_point) 
-        else:
-            edge_point.clear();
-        
-    for point in edge_point:
-        canvas.create_oval(point[0]-5, point[1]-5, point[0]+5, point[1]+5, fill='blue', outline='black')
-    #print(slope)
-    return []
-        
-                   
-edgeFind(sweep_angle_tracker)
+        angles = []
+        edge_point = []
+        start_angle = 0
+        angle_variance = .75
+        p_edge = []
+        for i in range(0,len(point_list)-1):
+        	
+                point_a_x = point_list[i][0]
+                point_a_y = point_list[i][1]
+                
+                point_b_x = point_list[i+1][0]
+                point_b_y = point_list[i+1][1]
+                try:
+                    angles.append(abs((point_b_y - point_a_y)/(point_b_x - point_a_x)))
+                except:
+                    angles.append(5)
+                print(angles)
+        #print(angles)
+        for j in range(len(angles)-1):
+                if(angles[start_angle] <= angles[j] + angle_variance and angles[start_angle] >= angles[j] - angle_variance and len(edge_point) <= 46):
+                    #print(j, angles[j])
+                    edge_point.append(point_list[j])
+                else:
+                    if len(edge_point) > 30:
+                        temp = []
+                        for i in edge_point:
+                            temp.append(i)
+                        #print(edge_point)
+                        p_edge.append(temp)    
+                        edge_point.clear()
+                        #print("Hit else case")
+                    else:
+                        edge_point.clear()
+                    start_angle = j+1
+        print(len(p_edge))        
+        for edge in p_edge:
+                for point in edge:
+                        canvas.create_oval(point[0]-5, point[1]-5, point[0]+5, point[1]+5, fill='blue', outline='black')
+        #print(p_edge)
+        return []
+	
+		   
+#edgeFind(sweep_angle_tracker)
 #rotate(point_tracker)
 findStraightEdges(point_tracker)
 
